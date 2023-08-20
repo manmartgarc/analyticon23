@@ -1,15 +1,13 @@
 
 [project]
-name="analyticon_fifa"
+name = "analyticon_fifa"
 version = "0.1.0"
 description = "Python package that generates all the outputs for Analyticon 2023."
 readme = "README.md"
 requires-python = ">=3.10"
-license = {file = "LICENSE"}
+license = { file = "LICENSE" }
 keywords = ["analyticon_fifa"]
-authors = [
-  {name="Manuel Martinez", email="manmartgarc@gmail.com"},
-]
+authors = [{ name = "Manuel Martinez", email = "manmartgarc@gmail.com" }]
 classifiers = [
   'Development Status :: 2 - Pre-Alpha',
   'Intended Audience :: Developers',
@@ -20,22 +18,15 @@ classifiers = [
   'Programming Language :: Python :: 3.9',
   'Programming Language :: Python :: 3.10',
 ]
-dependencies = [
-  
-]
+dependencies = []
 
 [project.urls]
-homepage = "https://github.com/mansueto-institute/analyticon_fifa"
-documentation = "https://analyticon_fifa.readthedocs.io/"
-repository = "https://github.com/mansueto-institute/analyticon_fifa"
-changelog = "https://github.com/manmartgarc/analyticon_fifa/blob/main/CHANGELOG.md"
+homepage = "https://github.com/manmartgarc/analyticon23"
+repository = "https://github.com/manmartgarc/analyticon23"
+changelog = "https://github.com/manmartgarc/analyticon23"
 
 [project.optional-dependencies]
-docs = [
-  "myst-parser==0.18.0",
-  "Sphinx==5.1.1",
-  "sphinx-rtd-theme==1.0.0",
-]
+docs = ["myst-parser==0.18.0", "Sphinx==5.1.1", "sphinx-rtd-theme==1.0.0"]
 dev = [
   "black",
   "build",
@@ -73,17 +64,18 @@ line-length = 79
 
 [tool.mypy]
 packages = ["src"]
+ignore_missing_imports = true
 
 
 [tool.pytest.ini_options]
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
 addopts = [
-    "--doctest-modules",
-    "--cov-config=.coveragerc",
-    "--cov=analyticon_fifa",
-    "--cov-branch",
-    "--cov-report=term-missing",
-    "--cov-report=xml:coverage.xml",
-    "--junitxml=coverage-junit.xml",
-    "--durations=5"
+  "--doctest-modules",
+  "--cov-config=.coveragerc",
+  "--cov=analyticon_fifa",
+  "--cov-branch",
+  "--cov-report=term-missing",
+  "--cov-report=xml:coverage.xml",
+  "--junitxml=coverage-junit.xml",
+  "--durations=5",
 ]

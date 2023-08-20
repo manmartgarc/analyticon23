@@ -99,7 +99,19 @@ class MaleData(FIFAData):
     def get_paths() -> Iterator[Path]:
         return DataPath().get_male_paths()
 
+
 class FemaleData(FIFAData):
     @staticmethod
     def get_paths() -> Iterator[Path]:
         return DataPath().get_female_paths()
+
+
+def load_data() -> pd.DataFrame:
+    maledf = MaleData()
+    femadf = FemaleData()
+    maledf["female"] = 0
+    femadf["female"] = 1
+    df = pd.concat((maledf, femadf), ignore_index=True)
+    df = df.sort_values(by=["sofifa_id", "year"])
+    df = df.drop_duplicates(subset="sofifa_id", keep="last")
+    return df
