@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-import pandas as pd
+from dataclasses import dataclass
+
+from joblib import dump, load
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import r2_score
-from sklearn.model_selection import cross_val_score, train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
-from analyticon_fifa.data_loader import load_data
+from analyticon_fifa.data_loader import DataPath, load_data
 
 FEATURES = {
     "con": [
@@ -73,8 +73,36 @@ FEATURES = {
 }
 
 
-class FifaPipeline(Pipeline):
-    def __new__(cls) -> Pipeline:
+@dataclass
+class FIFAModel:
+    def __post_init__(self) -> None:
+        self.pipeline: Pipeline = self._make_pipeline()
+        self.data_path = DataPath()
+        self.model_name = "model.joblib"
+
+    @classmethod
+    def from_joblib(cls) -> FIFAModel:
+        cls = FIFAModel()
+        cls.pipeline = load(cls.data_path.joinpath(cls.model_name))
+        return cls
+
+    def train(self) -> None:
+        df = load_data()
+        df = df[df["pace"].notnull()]
+        source = df[df["value_eur"].notnull()]
+        y = source["value_eur"]
+        X = source.drop(columns="value_eur")
+        self.pipeline.fit(X=X, y=y)
+
+    def write(self) -> None:
+        dump(self.pipeline, self.data_path.joinpath(self.model_name))
+
+    def predict(self, X, **predict_params):
+        return self.pipeline.predict(X, **predict_params)
+
+
+    @staticmethod
+    def _make_pipeline() -> Pipeline:
         pipeline = Pipeline(
             [
                 (
@@ -95,7 +123,10 @@ class FifaPipeline(Pipeline):
                 (
                     "estimator",
                     RandomForestRegressor(
-                        n_estimators=10, n_jobs=-1, random_state=42
+                        n_estimators=50,
+                        max_depth=10,
+                        n_jobs=-1,
+                        random_state=42,
                     ),
                 ),
             ],
@@ -105,15 +136,4 @@ class FifaPipeline(Pipeline):
 
 
 if __name__ == "__main__":
-    fp_cv = FifaPipeline()
-    df = load_data()
-    df = df[df["pace"].notnull()]
-    source = df[df["value_eur"].notnull()]
-    y = source["value_eur"]
-    X = source.drop(columns="value_eur")
-    scores = cross_val_score(estimator=fp_cv, X=X, y=y, cv=5, n_jobs=-1)
-    print(f"Mean CV R^2: {scores.mean():.2f}")
-    fp = FifaPipeline()
-    fp.fit(X=X, y=y)
-    target = df[df["value_eur"].isnull()]
-    # print(f"R2 score: {r2_score(y_test, y_pred):.2f}")
+    model = FIFAModel()

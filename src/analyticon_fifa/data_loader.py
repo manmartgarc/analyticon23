@@ -83,7 +83,7 @@ class FIFAData(ABC, pd.DataFrame):
             year = re.search(pat, path.name)
             if year is None:
                 raise ValueError("Couldn't find year in path")
-            part = pd.read_csv(path, usecols=USECOLS)
+            part = pd.read_csv(path, usecols=USECOLS, low_memory=False)
             part["year"] = int(year.group(1)) + 2000
             parts.append(part)
         return pd.concat(parts, ignore_index=True)
