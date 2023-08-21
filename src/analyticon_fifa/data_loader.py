@@ -106,12 +106,13 @@ class FemaleData(FIFAData):
         return DataPath().get_female_paths()
 
 
-def load_data() -> pd.DataFrame:
+def load_data(keep_last: bool = True) -> pd.DataFrame:
     maledf = MaleData()
     femadf = FemaleData()
     maledf["female"] = 0
     femadf["female"] = 1
     df = pd.concat((maledf, femadf), ignore_index=True)
     df = df.sort_values(by=["sofifa_id", "year"])
-    df = df.drop_duplicates(subset="sofifa_id", keep="last")
+    if keep_last:
+        df = df.drop_duplicates(subset="sofifa_id", keep="last")
     return df
