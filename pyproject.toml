@@ -18,7 +18,13 @@ classifiers = [
   'Programming Language :: Python :: 3.9',
   'Programming Language :: Python :: 3.10',
 ]
-dependencies = []
+dependencies = [
+  "pandas",
+  "scikit-learn",
+  "matplotlib",
+  "seaborn",
+  "statsmodels"
+]
 
 [project.urls]
 homepage = "https://github.com/manmartgarc/analyticon23"
